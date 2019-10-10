@@ -15,12 +15,14 @@ namespace MWKFaaS2
     {
         [FunctionName("ReadDB")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             string name = req.Query["name"];
+            string returnName = "";
+            string returnLastName = "";
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
@@ -31,7 +33,7 @@ namespace MWKFaaS2
             using (SqlConnection conn = new SqlConnection(str))
             {
                 conn.Open();
-                var text = "SELECT * FROM dbo.Person;";//WHERE Name = '" + name +"';";
+                var text = "SELECT TOP(1) * FROM dbo.Person2 ORDER BY newid();";//WHERE Name = '" + name +"';";
 
 
 
@@ -41,15 +43,15 @@ namespace MWKFaaS2
                     {
                         while (reader.Read())
                         {
-                            log.LogInformation(reader["Name"].ToString());
-                            log.LogInformation(reader["LastName"].ToString());
+                            returnName = (reader["Name"].ToString());
+                            returnLastName = (reader["LastName"].ToString());
                         }
                     }
                 }
             }
 
-            return name != null
-                ? (ActionResult)new OkObjectResult($"Hello, {name}")
+            return returnName != null || returnLastName != null
+                ? (ActionResult)new OkObjectResult($"Hello, {returnName} {returnLastName}")
                 : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
         }
     }

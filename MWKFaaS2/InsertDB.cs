@@ -15,7 +15,7 @@ namespace MWKFaaS2
     {
         [FunctionName("Test3")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
@@ -33,7 +33,7 @@ namespace MWKFaaS2
             using (SqlConnection conn = new SqlConnection(str))
             {
                 conn.Open();
-                var text = "INSERT INTO dbo.Person " +
+                var text = "INSERT INTO dbo.Person2 " +
                         "VALUES ('" + name + "', '" + lastName + "')";
 
 

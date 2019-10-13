@@ -53,7 +53,7 @@ namespace MWKFaaS2
             }
 
             return returnName != null || returnLastName != null
-                ? (ActionResult)new OkObjectResult($"Hello, {returnName} {returnLastName}")
+                ? (ActionResult)new OkObjectResult($"Janathan called him Rusty but his real name is: {returnName} {returnLastName}")
                 : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
         }
     }

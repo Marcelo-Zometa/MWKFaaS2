@@ -23,6 +23,7 @@ namespace MWKFaaS2
             string name = req.Query["name"];
             string returnName = "";
             string returnLastName = "";
+            int i = 0;
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
@@ -33,7 +34,7 @@ namespace MWKFaaS2
             using (SqlConnection conn = new SqlConnection(str))
             {
                 conn.Open();
-                var text = "SELECT TOP(1) * FROM dbo.Person2 ORDER BY newid();";//WHERE Name = '" + name +"';";
+                var text = "SELECT * FROM dbo.Person2 ORDER BY newid();";//WHERE Name = '" + name +"';";
 
 
 
@@ -41,10 +42,11 @@ namespace MWKFaaS2
                 {
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while (reader.Read())
+                        if (reader.Read())
                         {
                             returnName = (reader["Name"].ToString());
                             returnLastName = (reader["LastName"].ToString());
+                            //new OkObjectResult($"Hello, {returnName} {returnLastName}");
                         }
                     }
                 }

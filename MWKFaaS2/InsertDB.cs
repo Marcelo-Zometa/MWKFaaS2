@@ -38,13 +38,15 @@ namespace MWKFaaS2
                 {
                     conn.Open();
                     var text = "INSERT INTO dbo.Person2 " +
-                            "VALUES ('" + name + "', '" + lastName + "')";
+                            "VALUES (@name, @lastname)";
 
 
 
                     using (SqlCommand cmd = new SqlCommand(text, conn))
                     {
                         // Execute the command and log the # rows affected.
+                        cmd.Parameters.AddWithValue("@name", name);
+                        cmd.Parameters.AddWithValue("@lastname", lastName);
                         var rows = await cmd.ExecuteNonQueryAsync();
                         log.LogInformation($"{rows} rows were updated");
                     }
@@ -55,28 +57,7 @@ namespace MWKFaaS2
                     ? (ActionResult)new OkObjectResult($"Successful insertion")
                     : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
             }
-            /*// Get the connection string from app settings and use it to create a connection.
-            var str = Environment.GetEnvironmentVariable("sqldb_connection");
-            using (SqlConnection conn = new SqlConnection(str))
-            {
-                conn.Open();
-                var text = "INSERT INTO dbo.Person2 " +
-                        "VALUES ('" + name + "', '" + lastName + "')";
 
-
-
-                using (SqlCommand cmd = new SqlCommand(text, conn))
-                {
-                    // Execute the command and log the # rows affected.
-                    var rows = await cmd.ExecuteNonQueryAsync();
-                    log.LogInformation($"{rows} rows were updated");
-                }
-            }
-
-            //This is not for displaying to the user. Final product must not have it
-            return name != null
-                ? (ActionResult)new OkObjectResult($"Successful insertion")
-                : new BadRequestObjectResult("Please pass a name on the query string or in the request body");*/
         }
     }
 }
